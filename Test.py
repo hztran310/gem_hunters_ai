@@ -1,5 +1,18 @@
 from itertools import combinations
 from pysat.solvers import Glucose3
+import time
+
+def print_grid(grid):
+  for row in grid:
+      print(', '.join(str(cell) if cell is not None else '_' for cell in row))
+
+def generate_cnf(grid):
+  height = len(grid)
+  width = len(grid[0])
+  cnf = []
+
+  for i in range(height):from itertools import combinations
+from pysat.solvers import Glucose3
 
 def print_grid(grid):
   for row in grid:
@@ -68,5 +81,7 @@ if __name__ == "__main__":
   print("Input:")
   print_grid(grid)
   cnf = generate_cnf(grid)
+  print("CNF:", cnf)
   solve(cnf, grid)
     
+

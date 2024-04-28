@@ -1,10 +1,9 @@
 from Test import generate_cnf, print_grid
+import time
 
-grid = [[2, None, None, 1, None],
-        [None, 5, 4, 2, None],
-        [3, None, None, 2, 1],
-        [3, None, 6, None, 1],
-        [2, None, None, 2, 1]]
+grid = [[3, None, 2, None],
+          [None, None, 2, None],
+          [None, 3, 1, None]]
 
 def DPLL(cnf, model={}):
     # If the CNF is empty, return True
@@ -48,15 +47,81 @@ def assign(cnf, literal, value):
     else:
         return [[l for l in clause if l != literal] for clause in cnf if -literal not in clause]
 
+def check_grid(grid):
+  height = len(grid)
+  width = len(grid[0])
+  for i in range(height):
+    for j in range(width):
+      if isinstance(grid[i][j], int):
+        neighbors = [(x, y) for x in range(i-1, i+2) for y in range(j-1, j+2) 
+                     if 0 <= x < height and 0 <= y < width and (x, y) != (i, j)]
+        count = sum(1 for x, y in neighbors if grid[x][y] == 'T')
+        if count != grid[i][j]:
+          return False
+  return True
+
+import itertools
+
+def brute_force(grid):
+  height = len(grid)
+  width = len(grid[0])
+  unknown_cells = [(i, j) for i in range(height) for j in range(width) if grid[i][j] is None]
+  for combination in itertools.product(['G', 'T'], repeat=len(unknown_cells)):
+    new_grid = [row.copy() for row in grid]
+    for (i, j), value in zip(unknown_cells, combination):
+      new_grid[i][j] = value
+    if check_grid(new_grid):
+      return new_grid
+  return None
+
+def backtracking(grid, i=0, j=0):
+  height = len(grid)
+  width = len(grid[0])
+
+  # Base case: if reached end of grid, return the grid
+  if i == height:
+    return grid if is_valid_placement(grid) else None
+
+  # Calculate next position to explore
+  next_i, next_j = (i, j + 1) if j + 1 < width else (i + 1, 0)
+
+  # If cell is not None, move to the next cell
+  if grid[i][j] is not None:
+    return backtracking(grid, next_i, next_j)
+
+  # Try placing 'G' and 'T' and backtrack if necessary
+  for value in ['G', 'T']:
+    grid[i][j] = value
+    result = backtracking(grid, next_i, next_j)
+    if result is not None:
+      return result
+  grid[i][j] = None  # Backtrack
+  return None
+
+def is_valid_placement(grid):
+  height = len(grid)
+  width = len(grid[0])
+  for i in range(height):
+    for j in range(width):
+      if isinstance(grid[i][j], int):
+        neighbors = [(x, y) for x in range(i - 1, i + 2) for y in range(j - 1, j + 2)
+                     if 0 <= x < height and 0 <= y < width and (x, y) != (i, j)]
+        count = sum(1 for a, b in neighbors if grid[a][b] == 'T')
+        if count != grid[i][j]:
+          return False
+  return True
 
 if __name__ == "__main__":
     cnf = generate_cnf(grid)
+    start = time.time()
     model = DPLL(cnf)
+    end = time.time()
     print("Input: ")
     print_grid(grid)
     if model is False:
         print("The CNF is unsatisfiable")
     else:
+        print("DPLL time:", end - start)
         for i in range(len(grid)):
             for j in range(len(grid[0])):
                 if grid[i][j] is None:
@@ -67,4 +132,20 @@ if __name__ == "__main__":
                         grid[i][j] = 'G'
         print("Output:")
         print_grid(grid)
+
+    # Solve using brute force
+    start = time.time()
+    brute_force_result = brute_force(grid)
+    end = time.time()
+    print('Brute force time:', end - start)
+    print("Brute force result:")
+    print_grid(brute_force_result)
+    
+    # Solve using backtracking
+    start = time.time()
+    backtracking_result = backtracking(grid)
+    end = time.time()
+    print('Backtracking time:', end - start)
+    print("Backtracking result:")
+    print_grid(backtracking_result)
 
