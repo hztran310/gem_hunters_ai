@@ -5,6 +5,8 @@ def print_grid(grid):
   for row in grid:
       print(', '.join(str(cell) if cell is not None else '_' for cell in row))
 
+from itertools import combinations
+
 def generate_cnf(grid):
   height = len(grid)
   width = len(grid[0])
@@ -13,53 +15,60 @@ def generate_cnf(grid):
   for i in range(height):
     for j in range(width):
       if isinstance(grid[i][j], int):
-        # Get the neighbors of the cell
+        pos = i*width + j + 1
         neighbors = [(x, y) for x in range(i-1, i+2) for y in range(j-1, j+2) 
-             if 0 <= x < height and 0 <= y < width and (x, y) != (i, j) and grid[x][y] is None]
-        
-        # Generate clauses for exactly the number of traps
-        for subset in combinations(neighbors, grid[i][j]):
-          clause = [(neighbor[0]*width + neighbor[1] + 1) for neighbor in subset]
+               if 0 <= x < height and 0 <= y < width and (x, y) != (i, j)]
+        unknown_neighbors = [(x, y) for x, y in neighbors if grid[x][y] is None]
+        n = len(unknown_neighbors)
+        k = grid[i][j] - len([1 for x, y in neighbors if grid[x][y] == 'T'])
+
+        # U(k, n): for any k+1 squares out of n, at least one is not a mine
+        for subset in combinations(unknown_neighbors, k+1):
+          clause = [-((x*width + y + 1)) for x, y in subset]
           cnf.append(clause)
 
-  # Remove duplicate clauses
-  cnf = [list(x) for x in set(tuple(x) for x in cnf)]
+        # L(k, n): for any n-k+1 squares out of n, at least one is a mine
+        for subset in combinations(unknown_neighbors, n-k+1):
+          clause = [(x*width + y + 1) for x, y in subset]
+          cnf.append(clause)
 
   return cnf
 
 
+
 def solve(cnf, grid):
-    height = len(grid)
-    width = len(grid[0])
-    solver = Glucose3()
-    for clause in cnf:
-        solver.add_clause(clause)
+  height = len(grid)
+  width = len(grid[0])
+  solver = Glucose3()
+  for clause in cnf:
+    solver.add_clause(clause)
 
-    if solver.solve():
-      model = solver.get_model()
-      for i in range(height):
-        for j in range(width):
-          if grid[i][j] is None:
-            check = False
-            for k in range(1, height*width+1):
-              if k in model and k == i*width + j + 1:
-                  grid[i][j] = 'G'
-                  check = True
-                  break
-                
-            if not check:
-              grid[i][j] = 'T'
-                        
-      print("Output:")
-      print_grid(grid)
-    else:
-      print("No solution found")
+  if solver.solve():
+    print("The CNF is satisfiable. Here are all possible models:")
+    model = solver.get_model()
+    new_grid = [row.copy() for row in grid]  # Create a copy of the grid for each model
+    for i in range(height):
+      for j in range(width):
+        if new_grid[i][j] is None:
+          pos = i*width + j + 1
+          if -pos in model:
+            new_grid[i][j] = 'G'
+          elif pos in model:
+            new_grid[i][j] = 'T'
+    print("Output:")
+    print_grid(new_grid)
+  else:
+    print("The CNF is not satisfiable.")
 
-    return None
+# grid = [[3, None, 2, None],
+#         [None, None, 2, None],
+#         [None, 3, 1, None]]
 
-grid = [[3, None, 2, None],
-        [None, None, 2, None],
-        [None, 3, 1, None]]
+grid = [[2, None, None, 1, None],
+        [None, 5, 4, 2, None],
+        [3, None, None, 2, 1],
+        [3, None, 6, None, 1],
+        [2, None, None, 2, 1]]
 
 cnf = generate_cnf(grid)
 print(cnf)
