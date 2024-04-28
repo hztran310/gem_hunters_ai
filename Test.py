@@ -5,8 +5,6 @@ def print_grid(grid):
   for row in grid:
       print(', '.join(str(cell) if cell is not None else '_' for cell in row))
 
-from itertools import combinations
-
 def generate_cnf(grid):
   height = len(grid)
   width = len(grid[0])
@@ -35,7 +33,6 @@ def generate_cnf(grid):
   return cnf
 
 
-
 def solve(cnf, grid):
   height = len(grid)
   width = len(grid[0])
@@ -60,16 +57,16 @@ def solve(cnf, grid):
   else:
     print("The CNF is not satisfiable.")
 
-# grid = [[3, None, 2, None],
-#         [None, None, 2, None],
-#         [None, 3, 1, None]]
 
-grid = [[2, None, None, 1, None],
-        [None, 5, 4, 2, None],
-        [3, None, None, 2, 1],
-        [3, None, 6, None, 1],
-        [2, None, None, 2, 1]]
-
-cnf = generate_cnf(grid)
-print(cnf)
-solve(cnf, grid)
+if __name__ == "__main__":
+  # This code will only run if you do `python Test.py`, not when you import Test in another file
+  grid = [[2, None, None, 1, None],
+          [None, 5, 4, 2, None],
+          [3, None, None, 2, 1],
+          [3, None, 6, None, 1],
+          [2, None, None, 2, 1]]
+  print("Input:")
+  print_grid(grid)
+  cnf = generate_cnf(grid)
+  solve(cnf, grid)
+    
