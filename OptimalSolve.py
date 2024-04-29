@@ -193,7 +193,7 @@ if __name__ == "__main__":
             for j in range(len(grid[0])):
                 if grid[i][j] is None:
                     pos = i*len(grid[0]) + j + 1
-                    if model[pos]:
+                    if pos in model and model[pos]:
                         grid[i][j] = 'T'
                     else:
                         grid[i][j] = 'G'
