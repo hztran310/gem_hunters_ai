@@ -1,4 +1,4 @@
-from Test import generate_cnf, print_grid
+from PysatSolve import generate_cnf, print_grid
 import time
 
 grid_05 = [[3, None, 2, None],
