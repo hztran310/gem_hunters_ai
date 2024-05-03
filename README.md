@@ -9,7 +9,7 @@ Pysat installation is required.
 
 ```bash
 git clone https://github.com/hztran310/gem_hunters_ai
-pip3 install pysat
+pip3 install python-sat
 ```
 
 ## Run
