@@ -2,6 +2,77 @@ from itertools import combinations
 from pysat.solvers import Glucose3
 import time
 
+grid_4 = [[3, None, 2, None],
+          [None, None, 2, None],
+          [None, 3, 1, None]]
+
+grid_5 = [[None, 3, None, 3, 1],
+          [2, None, None, 4, None],
+          [None, None, 1, None, None],
+          [None, 2, None, 2, None],
+          [1, None, 1, 1, None]]
+
+grid_9 = [[None, None, 2, None, 2, None, 1, 2, None],
+          [None, 4, None, 3, None, None, 3, None, 4],
+          [2, None, None, 4, None, 5, None, None, None],
+          [None, None, 4, None, None, None, None, 6, None],
+          [None, None, 2, None, None, 5, None, None, None],
+          [3, None, None, None, None, 2, None, 4, 3],
+          [1, None, None, None, 3, None, None, None, None],
+          [None, 4, 6, None, None, None, 3, None, 2],
+          [None, None, None, None, 3, 2, None, 1, None]]
+
+grid_11 = [[None, None, 2, None, None, None, None, 1, None, None, None],
+          [2, 2, None, None, 4, None, None, 3, 3, None, 3],
+          [None, None, 5, 4, None, 3, None, None, None, 2, None],
+          [2, None, None, None, None, None, 2, 2, None, 1, None],
+          [1, None, 5, 5, None, None, 2, None, 1, None, 2],
+          [2, 3, None, None, 2, None, None, None, 2, None, None],
+          [None, None, 5, None, None, 3, 2, None, None, 4, None],
+          [None, 4, None, None, None, None, None, 2, None, None, None],
+          [None, 3, None, 5, 3, 2, None, None, None, None, 4],
+          [3, None, None, None, None, 2, None, None, 4, None, None],
+          [None, None, 3, None, 1, 2, None, 3, None, None, 3]]
+
+grid_15 = [[1, None, 1, 2, None, None, 2, None, 1, None, None, 3, None, None, 2],
+          [None, None, 2, None, None, 3, None, 4, 3, 2, None, None, None, 3 , None],
+          [None, 3, None, None, 3, 3, None, None, None, 1, 2, None, 4, None, 1],
+          [2, None, None, 5, None, 2, 2, None, 4, None, 2, None, None, 3, 2],
+          [1, None, 4, None, None, None, 2, 2, 3, None, None, None, 3 , None, None],
+          [None, 1, None, None, 6, None, None, 2, None, 3, None, 2, 3, 4, 3],
+          [None, 2, 3, None, None, None, 5, None, 2, 3, 2, None, None, None, None],
+          [3, None, None, 2, None, None, None, 3, 2, None, None, None, 4, None, None],
+          [None, None, 4, 3, 3, 3, None, None, None, None, 2, 3, None, None, 2],
+          [3, 4, None, None, None, 2, 2, None, 3, 3, 2, None, None, 3, None],
+          [2, None, None, 4, None, None, None, 4, None, None, None, None, 2, 2, 1],
+          [None, 4, 3, 3, None, 2, None, None, None, None, 3, 2, None, None, None],
+          [None, 2, None, None, 3, None, None, None, 7, None, None, 2, 2, 3, None],
+          [None, None, 3, 3, 3, None, 3, None, None, None, 3, 3, None, None, None],
+          [1, None, None, 2, None, None, None, 2, None, 2, 2, None, None, 3, None]]
+
+grid_20 = [
+          [None, None, 3, None, 2, 2, None, None, 2, None, 2, None, None, None, 2, 1, None, None, None, 1],
+          [2, None, None, 3, None, None, None, 3, None, None, 2, 2, 4, None, None, 2, None, 3, None, 2],
+          [2, 3, None, None, 4, 4, 5, None, None, 3, None, None, None, 4, None, 3, 1, None, 3, None],
+          [None, None, 4, None, None, None, 5, None, 3, None, None, None, 3, None, None, None, None, 3, None, None],
+          [None, 3, None, None, 5, None, None, None, None, 3, 4, 3, None, None, 3, None, 4, None, None, 3],
+          [1, 3, 3, None, None, None, 4, 4, None, None, None, None, 1, 2, None, None, None, 4, None, 1],
+          [None, 2, None, 2, None, 3, None, None, None, 4, None, 4, 3, None, None, 3, None, None, 2, 1],
+          [None, None, 2, 3, 3, None, 3, None, 3, 3, None, None, None, None, 5, None, None, 2, None, None],
+          [None, 2, 2, None, None, None, None, 2, None, None, 3, 3, None, 3, None, None, 4, None, 3, 1],
+          [1, None, None, 5, None, 4, 3, None, None, 2, None, None, 2, 2, None, 2, None, None, None, 2],
+          [2, 3, None, None, None, 4, None, None, None, None, 3, None, None, None, 1, 1, 3, None, None, None],
+          [None, None, 5, None, None, None, None, 4, 3, None, None, 3, None, None, None, None, 3, 3, None, None],
+          [1, None, None, None, 3, 3, None, 2, None, None, None, None, 2, 2, None, None, None, None, 2, 1],
+          [1, 3, None, 5, 4, None, 2, 2, None, 4, 4, None, None, 3, None, 2, None, None, None, 3],
+          [2, None, None, None, None, None, None, 2, 2, None, None, None, 5, None, 3, 2, 3, None, None, None],
+          [None, None, 4, None, None, None, 2, None, None, None, 4, 3, None, None, None, None, None, 4, 4, None],
+          [2, 3, None, None, 4, 4, None, None, 3, None, None, None, 2, None, None, None, None, None, 3, 2],
+          [None, 3, None, 3, None, None, None, 2, None, None, 4, 2, 2, 2, None, None, None, 4, None, None],
+          [None, None, 3, None, None, None, 5, None, 3, 2, None, None, 2, None, 3, 3, 3, None, 5, None],
+          [None, 1, 2, None, 2, None, None, 3, None, None, None, 1, 2, 1, None, None, None, None, 3, None]
+          ]
+
 def print_grid(grid):
   for row in grid:
       print(', '.join(str(cell) if cell is not None else '_' for cell in row))
@@ -73,11 +144,7 @@ def solve(cnf, grid):
 
 if __name__ == "__main__":
   # This code will only run if you do `python Test.py`, not when you import Test in another file
-  grid = [[2, None, None, 1, None],
-          [None, 5, 4, 2, None],
-          [3, None, None, 2, 1],
-          [3, None, 6, None, 1],
-          [2, None, None, 2, 1]]
+  grid = grid_4
   print("Input:")
   print_grid(grid)
   cnf = generate_cnf(grid)

@@ -1,17 +1,17 @@
 from PysatSolve import generate_cnf, print_grid
 import time
 
-grid_05 = [[3, None, 2, None],
+grid_4 = [[3, None, 2, None],
           [None, None, 2, None],
           [None, 3, 1, None]]
 
-grid_01 = [[None, 3, None, 3, 1],
+grid_5 = [[None, 3, None, 3, 1],
           [2, None, None, 4, None],
           [None, None, 1, None, None],
           [None, 2, None, 2, None],
           [1, None, 1, 1, None]]
 
-grid_02 = [[None, None, 2, None, 2, None, 1, 2, None],
+grid_9 = [[None, None, 2, None, 2, None, 1, 2, None],
           [None, 4, None, 3, None, None, 3, None, 4],
           [2, None, None, 4, None, 5, None, None, None],
           [None, None, 4, None, None, None, None, 6, None],
@@ -21,7 +21,7 @@ grid_02 = [[None, None, 2, None, 2, None, 1, 2, None],
           [None, 4, 6, None, None, None, 3, None, 2],
           [None, None, None, None, 3, 2, None, 1, None]]
 
-grid_03 = [[None, None, 2, None, None, None, None, 1, None, None, None],
+grid_11 = [[None, None, 2, None, None, None, None, 1, None, None, None],
           [2, 2, None, None, 4, None, None, 3, 3, None, 3],
           [None, None, 5, 4, None, 3, None, None, None, 2, None],
           [2, None, None, None, None, None, 2, 2, None, 1, None],
@@ -33,7 +33,7 @@ grid_03 = [[None, None, 2, None, None, None, None, 1, None, None, None],
           [3, None, None, None, None, 2, None, None, 4, None, None],
           [None, None, 3, None, 1, 2, None, 3, None, None, 3]]
 
-grid_04 = [[1, None, 1, 2, None, None, 2, None, 1, None, None, 3, None, None, 2],
+grid_15 = [[1, None, 1, 2, None, None, 2, None, 1, None, None, 3, None, None, 2],
           [None, None, 2, None, None, 3, None, 4, 3, 2, None, None, None, 3 , None],
           [None, 3, None, None, 3, 3, None, None, None, 1, 2, None, 4, None, 1],
           [2, None, None, 5, None, 2, 2, None, 4, None, 2, None, None, 3, 2],
@@ -49,7 +49,7 @@ grid_04 = [[1, None, 1, 2, None, None, 2, None, 1, None, None, 3, None, None, 2]
           [None, None, 3, 3, 3, None, 3, None, None, None, 3, 3, None, None, None],
           [1, None, None, 2, None, None, None, 2, None, 2, 2, None, None, 3, None]]
 
-grid = [
+grid_20 = [
           [None, None, 3, None, 2, 2, None, None, 2, None, 2, None, None, None, 2, 1, None, None, None, 1],
           [2, None, None, 3, None, None, None, 3, None, None, 2, 2, 4, None, None, 2, None, 3, None, 2],
           [2, 3, None, None, 4, 4, 5, None, None, 3, None, None, None, 4, None, 3, 1, None, 3, None],
@@ -179,6 +179,7 @@ def is_valid_placement(grid):
   return True
 
 if __name__ == "__main__":
+    grid = grid_20
     cnf = generate_cnf(grid)
     start = time.time()
     model = DPLL(cnf)

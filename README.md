@@ -13,4 +13,4 @@ pip3 install python-sat
 ```
 
 ## Run
-Simply launch PysatSolve.py.
+Simply launch PysatSolve or OptimalSolve.py to try Pysat approach or DPLL/Brute-force/Backtracking approach respectively.
