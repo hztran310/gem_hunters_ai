@@ -1,76 +1,5 @@
-from PysatSolve import generate_cnf, print_grid
+from PysatSolve import generate_cnf, print_grid, read_file
 import time
-
-grid_4 = [[3, None, 2, None],
-          [None, None, 2, None],
-          [None, 3, 1, None]]
-
-grid_5 = [[None, 3, None, 3, 1],
-          [2, None, None, 4, None],
-          [None, None, 1, None, None],
-          [None, 2, None, 2, None],
-          [1, None, 1, 1, None]]
-
-grid_9 = [[None, None, 2, None, 2, None, 1, 2, None],
-          [None, 4, None, 3, None, None, 3, None, 4],
-          [2, None, None, 4, None, 5, None, None, None],
-          [None, None, 4, None, None, None, None, 6, None],
-          [None, None, 2, None, None, 5, None, None, None],
-          [3, None, None, None, None, 2, None, 4, 3],
-          [1, None, None, None, 3, None, None, None, None],
-          [None, 4, 6, None, None, None, 3, None, 2],
-          [None, None, None, None, 3, 2, None, 1, None]]
-
-grid_11 = [[None, None, 2, None, None, None, None, 1, None, None, None],
-          [2, 2, None, None, 4, None, None, 3, 3, None, 3],
-          [None, None, 5, 4, None, 3, None, None, None, 2, None],
-          [2, None, None, None, None, None, 2, 2, None, 1, None],
-          [1, None, 5, 5, None, None, 2, None, 1, None, 2],
-          [2, 3, None, None, 2, None, None, None, 2, None, None],
-          [None, None, 5, None, None, 3, 2, None, None, 4, None],
-          [None, 4, None, None, None, None, None, 2, None, None, None],
-          [None, 3, None, 5, 3, 2, None, None, None, None, 4],
-          [3, None, None, None, None, 2, None, None, 4, None, None],
-          [None, None, 3, None, 1, 2, None, 3, None, None, 3]]
-
-grid_15 = [[1, None, 1, 2, None, None, 2, None, 1, None, None, 3, None, None, 2],
-          [None, None, 2, None, None, 3, None, 4, 3, 2, None, None, None, 3 , None],
-          [None, 3, None, None, 3, 3, None, None, None, 1, 2, None, 4, None, 1],
-          [2, None, None, 5, None, 2, 2, None, 4, None, 2, None, None, 3, 2],
-          [1, None, 4, None, None, None, 2, 2, 3, None, None, None, 3 , None, None],
-          [None, 1, None, None, 6, None, None, 2, None, 3, None, 2, 3, 4, 3],
-          [None, 2, 3, None, None, None, 5, None, 2, 3, 2, None, None, None, None],
-          [3, None, None, 2, None, None, None, 3, 2, None, None, None, 4, None, None],
-          [None, None, 4, 3, 3, 3, None, None, None, None, 2, 3, None, None, 2],
-          [3, 4, None, None, None, 2, 2, None, 3, 3, 2, None, None, 3, None],
-          [2, None, None, 4, None, None, None, 4, None, None, None, None, 2, 2, 1],
-          [None, 4, 3, 3, None, 2, None, None, None, None, 3, 2, None, None, None],
-          [None, 2, None, None, 3, None, None, None, 7, None, None, 2, 2, 3, None],
-          [None, None, 3, 3, 3, None, 3, None, None, None, 3, 3, None, None, None],
-          [1, None, None, 2, None, None, None, 2, None, 2, 2, None, None, 3, None]]
-
-grid_20 = [
-          [None, None, 3, None, 2, 2, None, None, 2, None, 2, None, None, None, 2, 1, None, None, None, 1],
-          [2, None, None, 3, None, None, None, 3, None, None, 2, 2, 4, None, None, 2, None, 3, None, 2],
-          [2, 3, None, None, 4, 4, 5, None, None, 3, None, None, None, 4, None, 3, 1, None, 3, None],
-          [None, None, 4, None, None, None, 5, None, 3, None, None, None, 3, None, None, None, None, 3, None, None],
-          [None, 3, None, None, 5, None, None, None, None, 3, 4, 3, None, None, 3, None, 4, None, None, 3],
-          [1, 3, 3, None, None, None, 4, 4, None, None, None, None, 1, 2, None, None, None, 4, None, 1],
-          [None, 2, None, 2, None, 3, None, None, None, 4, None, 4, 3, None, None, 3, None, None, 2, 1],
-          [None, None, 2, 3, 3, None, 3, None, 3, 3, None, None, None, None, 5, None, None, 2, None, None],
-          [None, 2, 2, None, None, None, None, 2, None, None, 3, 3, None, 3, None, None, 4, None, 3, 1],
-          [1, None, None, 5, None, 4, 3, None, None, 2, None, None, 2, 2, None, 2, None, None, None, 2],
-          [2, 3, None, None, None, 4, None, None, None, None, 3, None, None, None, 1, 1, 3, None, None, None],
-          [None, None, 5, None, None, None, None, 4, 3, None, None, 3, None, None, None, None, 3, 3, None, None],
-          [1, None, None, None, 3, 3, None, 2, None, None, None, None, 2, 2, None, None, None, None, 2, 1],
-          [1, 3, None, 5, 4, None, 2, 2, None, 4, 4, None, None, 3, None, 2, None, None, None, 3],
-          [2, None, None, None, None, None, None, 2, 2, None, None, None, 5, None, 3, 2, 3, None, None, None],
-          [None, None, 4, None, None, None, 2, None, None, None, 4, 3, None, None, None, None, None, 4, 4, None],
-          [2, 3, None, None, 4, 4, None, None, 3, None, None, None, 2, None, None, None, None, None, 3, 2],
-          [None, 3, None, 3, None, None, None, 2, None, None, 4, 2, 2, 2, None, None, None, 4, None, None],
-          [None, None, 3, None, None, None, 5, None, 3, 2, None, None, 2, None, 3, 3, 3, None, 5, None],
-          [None, 1, 2, None, 2, None, None, 3, None, None, None, 1, 2, 1, None, None, None, None, 3, None]
-          ]
 
 def DPLL(cnf, model={}):
     # If the CNF is empty, return True
@@ -147,7 +76,7 @@ def backtracking(grid, i=0, j=0):
 
   # Base case: if reached end of grid, return the grid
   if i == height:
-    return grid if is_valid_placement(grid) else None
+    return grid if check_grid(grid) else None
 
   # Calculate next position to explore
   next_i, next_j = (i, j + 1) if j + 1 < width else (i + 1, 0)
@@ -165,21 +94,8 @@ def backtracking(grid, i=0, j=0):
   grid[i][j] = None  # Backtrack
   return None
 
-def is_valid_placement(grid):
-  height = len(grid)
-  width = len(grid[0])
-  for i in range(height):
-    for j in range(width):
-      if isinstance(grid[i][j], int):
-        neighbors = [(x, y) for x in range(i - 1, i + 2) for y in range(j - 1, j + 2)
-                     if 0 <= x < height and 0 <= y < width and (x, y) != (i, j)]
-        count = sum(1 for a, b in neighbors if grid[a][b] == 'T')
-        if count != grid[i][j]:
-          return False
-  return True
-
 if __name__ == "__main__":
-    grid = grid_20
+    grid = read_file('Test case 20x20.txt')
     cnf = generate_cnf(grid)
     start = time.time()
     model = DPLL(cnf)
@@ -216,4 +132,3 @@ if __name__ == "__main__":
     print('Backtracking time:', end - start)
     print("Backtracking result:")
     print_grid(backtracking_result)
-
