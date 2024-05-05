@@ -170,7 +170,7 @@ def backtracking(grid, i=0, j=0):
   return None
 
 if __name__ == "__main__":
-    grid = read_file('Test case 20x20.txt')
+    grid = read_file('Test case 5x5.txt')
     cnf = generate_cnf(grid)
     # Solve using Pysat
     print("\nSolve with Pysat:\n")
