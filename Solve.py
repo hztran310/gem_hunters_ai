@@ -172,6 +172,8 @@ def backtracking(grid, i=0, j=0):
 if __name__ == "__main__":
     grid = read_file('Test case 20x20.txt')
     cnf = generate_cnf(grid)
+    # Solve using Pysat
+    print("\nSolve with Pysat:\n")
     print("Input: ")
     print_grid(grid)
     start = time.time()
@@ -181,8 +183,9 @@ if __name__ == "__main__":
       print("Pysat solve time:", end - start)
       print("Output:")
       print_grid(output)
-      
-
+    
+    # Solve using DPLL
+    print("\nSolve with DPLL:\n")
     start = time.time()
     model = DPLL(cnf)
     end = time.time()
@@ -202,6 +205,7 @@ if __name__ == "__main__":
         print_grid(grid)
 
     # Solve using brute force
+    print("\nSolve with Brute-force:\n")
     start = time.time()
     brute_force_result = brute_force(grid)
     end = time.time()
@@ -210,6 +214,7 @@ if __name__ == "__main__":
     print_grid(brute_force_result)
     
     # Solve using backtracking
+    print("\nSolve with Backtracking:\n")
     start = time.time()
     backtracking_result = backtracking(grid)
     end = time.time()
